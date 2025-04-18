@@ -2,8 +2,10 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "vite build",
-        "dev": "vite"
+        "start": "php artisan serve",
+        "migrate": "php artisan migrate",
+        "seed": "php artisan db:seed",
+        "migrate:fresh": "php artisan migrate:fresh"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",

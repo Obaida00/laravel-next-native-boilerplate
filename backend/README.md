@@ -68,6 +68,22 @@ Run the database seeder and you're done
 
 The api can be accessed at [http://localhost:8000/api](http://localhost:8000/api).
 
+## OAuth2.0 setup
+
+> This is only required if you want to use the social login feature.
+
+- Create a new project in the social app you want to utilize (available now are Google and Github) from the [GitHub Developer Console](https://github.com/settings/developers) or [Google Developer Console](https://console.developers.google.com/)
+- Set the redirect url to `http://localhost:8000/api/social/callback` for both providers
+- Set the client id and secret in the `.env` file
+
+    GOOGLE_CLIENT_ID=your-google-client-id
+    GOOGLE_CLIENT_SECRET=your-google-client-secret
+    GOOGLE_REDIRECT=http://localhost:8000/api/social/callback
+    GITHUB_CLIENT_ID=your-github-client-id
+    GITHUB_CLIENT_SECRET=your-github-client-secret
+    GITHUB_REDIRECT=http://localhost:8000/api/social/callback
+
+
 ## API Specification
 
 This application adheres to the api specifications set by the [Scramble](https://github.com/dedoc/scramble) team. This helps mix and match any backend with any other frontend without conflicts.

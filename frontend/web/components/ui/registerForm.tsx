@@ -7,6 +7,7 @@ import { Input } from "./input";
 import { useEffect, useState } from "react";
 import { Button } from "./button";
 import { Eye, EyeOff } from "lucide-react";
+import GithubAuthBtn from "./githubAuthBtn";
 
 
 const formSchema = z.object({
@@ -38,14 +39,19 @@ function RegisterForm() {
         }
     });
 
-    const submit = (values: z.infer<typeof formSchema>) => {
+    const handleRegister = (values: z.infer<typeof formSchema>) => {
         console.log(values);
     }
+
+    const handleGithubRegister = () => {
+        //TODO: handle the OAuth register.
+    };
+
     return (
         <>
-            <div className="mb-3">
+            <div className="font-[family-name:var(--font-geist-sans)]">
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(submit)} className="space-y-2">
+                    <form onSubmit={form.handleSubmit(handleRegister)} className="space-y-2">
                         <FormField
                             control={form.control}
                             name="name"
@@ -91,13 +97,13 @@ function RegisterForm() {
                                     <FormMessage />
                                 </FormItem>
                             )} />
-                        <Button type="submit" variant={"default"} className="w-full mt-4">Sign up</Button>
+                        <Button type="submit" variant={"default"} className="w-full mt-4 cursor-pointer">Sign up</Button>
                     </form>
                 </Form>
             </div>
-            <div className="flex justify-center">
-                <p>or</p>
-                
+            <div className="flex flex-col justify-center">
+                <p className="text-center my-3 font-[family-name:var(--font-geist-sans)] font-medium">or</p>
+                <GithubAuthBtn onClick={handleGithubRegister}/>
             </div>
         </>
     );

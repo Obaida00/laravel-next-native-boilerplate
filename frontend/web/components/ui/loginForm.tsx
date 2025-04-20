@@ -9,6 +9,7 @@ import { EyeOff, Eye } from 'lucide-react';
 import { Button } from './button';
 import GithubAuthBtn from './githubAuthBtn';
 import { Input } from './input';
+import { signIn } from 'next-auth/react';
 
 export default function LoginForm() {
     const [passwordVisible, setPasswordVisible] = useState(false);
@@ -34,7 +35,7 @@ export default function LoginForm() {
     }
 
     const handleGithubLogin = () => {
-        //TODO: handle login via GitHub.
+        signIn('github');
     }
 
     return (

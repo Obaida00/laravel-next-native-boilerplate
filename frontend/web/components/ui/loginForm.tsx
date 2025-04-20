@@ -28,8 +28,32 @@ export default function LoginForm() {
         }
     });
 
-    const handleLogin = (values: z.infer<typeof formSchema>) => {
-        console.log(values);
+    const handleLogin = async (values: z.infer<typeof formSchema>) => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/login`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                email: values.email,
+                password: values.password,
+              }),
+
+            });
+            
+            const data = await response.json();
+            console.log(response.status);
+            
+            if (!response.ok) {
+              console.error("Login failed:", data.message);
+              return;
+            }
+        
+            console.log("Login successful:", data);
+          } catch (error) {
+            console.error("Error during Login:", error);
+          }
     }
 
 

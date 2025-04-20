@@ -54,8 +54,34 @@ function RegisterForm() {
     },
   });
 
-  const handleRegister = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const handleRegister = async (values: z.infer<typeof formSchema>) => {
+    
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: values.name,
+          email: values.email,
+          password: values.password,
+          passwordConfirmation: values.confirmPassword,
+        }),
+      });
+      
+      const data = await response.json();
+      console.log(response.status);
+      
+      if (!response.ok) {
+        console.error("Registration failed:", data.message);
+        return;
+      }
+  
+      console.log("Registration successful:", data);
+    } catch (error) {
+      console.error("Error during registration:", error);
+    }
   };
 
   return (

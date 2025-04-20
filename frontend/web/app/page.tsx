@@ -1,6 +1,4 @@
 import AuthToggler from "@/components/ui/authToggler";
-import LoginForm from "@/components/ui/loginForm";
-import RegisterForm from "@/components/ui/registerForm";
 
 
 export default function Home() {

@@ -1,9 +1,12 @@
 "use client"
 import React from 'react'
-import { Button } from "@/components/ui/button"
 import {
     Card,
     CardContent,
+
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
 
 import {
     Tabs,
@@ -17,7 +20,7 @@ import useAuthCheck from "@/hooks/useAuthCheck";
 
 
 export default function AuthToggler() {
-    useAuthCheck({ when: "authenticated", redirectTo: "/home" })
+    useAuthCheck({when:"authenticated", redirectTo: "/home"})
 
     return (
         <Tabs defaultValue="login" className="w-[400px]">
@@ -29,12 +32,12 @@ export default function AuthToggler() {
                 <Card>
                     <CardHeader>
                         <CardTitle className='text-xl'>Sign In</CardTitle>
-
+                        
                     </CardHeader>
                     <CardContent className="space-y-2">
                         <LoginForm></LoginForm>
                     </CardContent>
-
+                    
                 </Card>
             </TabsContent>
             <TabsContent value="register">

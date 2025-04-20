@@ -98,7 +98,16 @@ class AuthController extends Controller
                 if ($response->failed()) {
                     return response()->json(['error' => 'Invalid GitHub token'], 401);
                 }
+
                 $userData = $response->json();
+                if ($userData['email'] == null) {
+                    $emailResponse = Http::withHeaders([
+                        'Authorization' => 'Bearer ' . $token,
+                        'Accept' => 'application/json',
+                    ])->get('https://api.github.com/user/emails');
+                    $emails = $emailResponse->json();
+                    $userData['email'] = $emails[0]['email'] ?? null;
+                }
                 $socialUser = (object) [
                     'id' => $userData['id'],
                     'name' => $userData['name'] ?? $userData['login'],
@@ -136,9 +145,9 @@ class AuthController extends Controller
                 ]);
             }
         }
-        
+
         $token = $user->createToken('app-token')->plainTextToken;
-        
+
         return response()->json([
             'token' => $token,
             /** @var User $user */

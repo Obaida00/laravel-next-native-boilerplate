@@ -7,7 +7,6 @@ import { z } from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './form';
 import { EyeOff, Eye } from 'lucide-react';
 import { Button } from './button';
-import GithubAuthBtn from './githubAuthBtn';
 import { Input } from './input';
 
 export default function LoginForm() {
@@ -33,9 +32,6 @@ export default function LoginForm() {
         console.log(values);
     }
 
-    const handleGithubLogin = () => {
-        //TODO: handle login via GitHub.
-    }
 
     return (
         <>
@@ -72,10 +68,7 @@ export default function LoginForm() {
                     </form>
                 </Form>
             </div>
-            <div className="flex flex-col justify-center">
-                <p className="text-center my-3 font-[family-name:var(--font-geist-sans)] font-medium">or</p>
-                <GithubAuthBtn onClick={handleGithubLogin} />
-            </div>
+            
         </>
     )
 }

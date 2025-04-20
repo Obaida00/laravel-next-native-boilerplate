@@ -18,7 +18,7 @@ export default function useAuthCheck({
 
   useEffect(() => {
     if (status === when) {
-      router.push(redirectTo);
+      router.replace(redirectTo);
     }
   }, [status, when, redirectTo, router]);
 }

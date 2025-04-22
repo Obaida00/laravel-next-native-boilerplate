@@ -7,9 +7,7 @@ import { z } from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './form';
 import { EyeOff, Eye } from 'lucide-react';
 import { Button } from './button';
-import GithubAuthBtn from './githubAuthBtn';
 import { Input } from './input';
-import { signIn } from 'next-auth/react';
 
 export default function LoginForm() {
     const [passwordVisible, setPasswordVisible] = useState(false);
@@ -30,13 +28,34 @@ export default function LoginForm() {
         }
     });
 
-    const handleLogin = (values: z.infer<typeof formSchema>) => {
-        console.log(values);
+    const handleLogin = async (values: z.infer<typeof formSchema>) => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/login`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                email: values.email,
+                password: values.password,
+              }),
+
+            });
+            
+            const data = await response.json();
+            console.log(response.status);
+            
+            if (!response.ok) {
+              console.error("Login failed:", data.message);
+              return;
+            }
+        
+            console.log("Login successful:", data);
+          } catch (error) {
+            console.error("Error during Login:", error);
+          }
     }
 
-    const handleGithubLogin = () => {
-        signIn('github');
-    }
 
     return (
         <>
@@ -73,10 +92,7 @@ export default function LoginForm() {
                     </form>
                 </Form>
             </div>
-            <div className="flex flex-col justify-center">
-                <p className="text-center my-3 font-[family-name:var(--font-geist-sans)] font-medium">or</p>
-                <GithubAuthBtn onClick={handleGithubLogin} />
-            </div>
+            
         </>
     )
 }

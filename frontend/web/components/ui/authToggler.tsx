@@ -23,7 +23,7 @@ export default function AuthToggler() {
     useAuthCheck({when:"authenticated", redirectTo: "/home"})
 
     return (
-        <Tabs defaultValue="login" className="w-[400px]">
+        <Tabs defaultValue="login" className="w-[400px] font-[family-name:var(--font-geist-sans)]">
             <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="login">Sign In</TabsTrigger>
                 <TabsTrigger value="register">Register</TabsTrigger>

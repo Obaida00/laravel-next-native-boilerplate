@@ -12,6 +12,7 @@ import myToast from './toast';
 
 export default function LoginForm() {
     const [passwordVisible, setPasswordVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const togglePasswordVisibility = () => {
         setPasswordVisible((prev) => !prev);
@@ -31,6 +32,7 @@ export default function LoginForm() {
 
     const handleLogin = async (values: z.infer<typeof formSchema>) => {
         try {
+            setLoading(true);
             const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/login`, {
                 method: "POST",
                 headers: {
@@ -50,9 +52,15 @@ export default function LoginForm() {
                 myToast({ title: data.message, state: "error" });
                 console.log("Login error:", data.message);
             }
+            if (response.ok) {
+                myToast({ title: "Logged in successfully", state: "success"})
+            }
 
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
-            myToast({ title: `${error}`, state: "error", });
+            myToast({ title: "Something went wrong", state: "error", });
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -88,7 +96,7 @@ export default function LoginForm() {
                                 </FormItem>
                             )} />
 
-                        <Button type="submit" variant={"default"} className="w-full mt-4 cursor-pointer">Sign up</Button>
+                        <Button type="submit" disabled={loading} variant={"default"} className="w-full mt-4 cursor-pointer">{loading ? "Loading..." : "Login"}</Button>
                     </form>
                 </Form>
             </div>

@@ -20,6 +20,7 @@ import myToast from "./toast";
 function RegisterForm() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);
@@ -58,7 +59,7 @@ function RegisterForm() {
   });
 
   const handleRegister = async (values: z.infer<typeof formSchema>) => {
-
+    setLoading(true);
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/register`, {
         method: "POST",
@@ -84,14 +85,19 @@ function RegisterForm() {
               message: data.errors[field][0],
             })
           })
+        } else {
+          myToast({ title: data.message ?? "Someting went wrong", state: "error" });
         }
-      } else {
-        myToast({ title: data.message ?? "Someting went wrong", state: "error" });
+      } if (response.ok) {
+        myToast({ title: "Account created successfully", state: "success" })
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
 
-      myToast({ title: `${error}`, state: "error" });
+      myToast({ title: "Something went wrong", state: "error" });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -181,13 +187,7 @@ function RegisterForm() {
                 </FormItem>
               )}
             />
-            <Button
-              type="submit"
-              variant={"default"}
-              className="w-full mt-4 cursor-pointer"
-            >
-              Sign up
-            </Button>
+            <Button type="submit" disabled={loading} variant={"default"} className="w-full mt-4 cursor-pointer">{loading ? "Loading..." : "Sign up"}</Button>
           </form>
         </Form>
       </div>

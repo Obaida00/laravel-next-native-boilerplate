@@ -14,24 +14,8 @@ import { Input } from "./input";
 import { useState } from "react";
 import { Button } from "./button";
 import { Eye, EyeOff } from "lucide-react";
+import myToast from "./toast";
 
-const formSchema = z
-  .object({
-    name: z
-      .string()
-      .min(2, { message: "The name must be at least 2 characters" }),
-    email: z.string().email({ message: "Please enter a valid email" }),
-    password: z
-      .string()
-      .min(8, { message: "Password must be at least 8 characters" }),
-    confirmPassword: z
-      .string()
-      .min(8, { message: "Password must be at least 8 characters" }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords doesn't match",
-    path: ["confirmPassword"],
-  });
 
 function RegisterForm() {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -44,6 +28,25 @@ function RegisterForm() {
   const toggleConfirmVisibility = () => {
     setConfirmPasswordVisible((prev) => !prev);
   };
+  const formSchema = z
+    .object({
+      name: z
+        .string()
+        .min(2, { message: "The name must be at least 2 characters" }),
+      email: z.string().email({ message: "Please enter a valid email" }),
+      password: z
+        .string()
+        .min(8, { message: "Password must be at least 8 characters" }),
+      confirmPassword: z
+        .string()
+        .min(8, { message: "Password must be at least 8 characters" }),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: "Passwords doesn't match",
+      path: ["confirmPassword"],
+    });
+
+  type FormFields = z.infer<typeof formSchema>;
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -55,12 +58,13 @@ function RegisterForm() {
   });
 
   const handleRegister = async (values: z.infer<typeof formSchema>) => {
-    
+
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Accept": "application/json"
         },
         body: JSON.stringify({
           name: values.name,
@@ -69,18 +73,25 @@ function RegisterForm() {
           passwordConfirmation: values.confirmPassword,
         }),
       });
-      
+
       const data = await response.json();
-      console.log(response.status);
-      
+
       if (!response.ok) {
-        console.error("Registration failed:", data.message);
-        return;
+        if (data.errors) {
+          (Object.keys(data.errors) as Array<keyof FormFields>).forEach((field) => {
+            form.setError(field, {
+              type: "server",
+              message: data.errors[field][0],
+            })
+          })
+        }
+      } else {
+        myToast({ title: data.message ?? "Someting went wrong", state: "error" });
       }
-  
-      console.log("Registration successful:", data);
+
     } catch (error) {
-      console.error("Error during registration:", error);
+
+      myToast({ title: `${error}`, state: "error" });
     }
   };
 

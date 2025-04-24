@@ -8,6 +8,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { EyeOff, Eye } from 'lucide-react';
 import { Button } from './button';
 import { Input } from './input';
+import myToast from './toast';
 
 export default function LoginForm() {
     const [passwordVisible, setPasswordVisible] = useState(false);
@@ -31,29 +32,28 @@ export default function LoginForm() {
     const handleLogin = async (values: z.infer<typeof formSchema>) => {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/login`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                email: values.email,
-                password: values.password,
-              }),
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email: values.email,
+                    password: values.password,
+                }),
 
             });
-            
+
             const data = await response.json();
             console.log(response.status);
-            
+
             if (!response.ok) {
-              console.error("Login failed:", data.message);
-              return;
+                myToast({ title: data.message, state: "error" });
+                console.log("Login error:", data.message);
             }
-        
-            console.log("Login successful:", data);
-          } catch (error) {
-            console.error("Error during Login:", error);
-          }
+
+        } catch (error) {
+            myToast({ title: `${error}`, state: "error", });
+        }
     }
 
 
@@ -92,7 +92,7 @@ export default function LoginForm() {
                     </form>
                 </Form>
             </div>
-            
+
         </>
     )
 }

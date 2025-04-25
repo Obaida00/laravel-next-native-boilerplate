@@ -15,12 +15,13 @@ import { useState } from "react";
 import { Button } from "./button";
 import { Eye, EyeOff } from "lucide-react";
 import myToast from "./toast";
-
+import { useRouter } from "next/navigation";
 
 function RegisterForm() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);
@@ -29,18 +30,13 @@ function RegisterForm() {
   const toggleConfirmVisibility = () => {
     setConfirmPasswordVisible((prev) => !prev);
   };
+
   const formSchema = z
     .object({
-      name: z
-        .string()
-        .min(2, { message: "The name must be at least 2 characters" }),
+      name: z.string().min(2, { message: "The name must be at least 2 characters" }),
       email: z.string().email({ message: "Please enter a valid email" }),
-      password: z
-        .string()
-        .min(8, { message: "Password must be at least 8 characters" }),
-      confirmPassword: z
-        .string()
-        .min(8, { message: "Password must be at least 8 characters" }),
+      password: z.string().min(8, { message: "Password must be at least 8 characters" }),
+      confirmPassword: z.string().min(8, { message: "Password must be at least 8 characters" }),
     })
     .refine((data) => data.password === data.confirmPassword, {
       message: "Passwords doesn't match",
@@ -48,7 +44,8 @@ function RegisterForm() {
     });
 
   type FormFields = z.infer<typeof formSchema>;
-  const form = useForm<z.infer<typeof formSchema>>({
+
+  const form = useForm<FormFields>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
@@ -58,10 +55,14 @@ function RegisterForm() {
     },
   });
 
-  const handleRegister = async (values: z.infer<typeof formSchema>) => {
+  const handleRegister = async (values: FormFields) => {
     setLoading(true);
+    console.log(values.password);
+    console.log(values.confirmPassword);
+    
+    
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/register`, {
+      const response = await fetch("/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -78,23 +79,26 @@ function RegisterForm() {
       const data = await response.json();
 
       if (!response.ok) {
+        console.log(`reg form: ${data.errors}`);
+        
         if (data.errors) {
           (Object.keys(data.errors) as Array<keyof FormFields>).forEach((field) => {
             form.setError(field, {
               type: "server",
               message: data.errors[field][0],
-            })
-          })
+            });
+          });
         } else {
-          myToast({ title: data.message ?? "Someting went wrong", state: "error" });
+          myToast({ title: data.message ?? "Something went wrong", state: "error" });
         }
-      } if (response.ok) {
-        myToast({ title: "Account created successfully", state: "success" })
+        return;
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
+      myToast({ title: "Account created successfully", state: "success" });
+      router.replace("/home"); // ✅ وجه المستخدم بعد التسجيل
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
       myToast({ title: "Something went wrong", state: "error" });
     } finally {
       setLoading(false);
@@ -102,96 +106,73 @@ function RegisterForm() {
   };
 
   return (
-    <>
-      <div className="font-[family-name:var(--font-geist-sans)]">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleRegister)}
-            className="space-y-2"
-          >
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="email" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <div className="flex gap-1">
-                      <Input
-                        {...field}
-                        type={passwordVisible ? "text" : "password"}
-                      />
-                      <Button
-                        size="icon"
-                        type="button"
-                        className="cursor-pointer"
-                        onClick={togglePasswordVisibility}
-                      >
-                        {passwordVisible ? <EyeOff /> : <Eye />}
-                      </Button>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confirm password</FormLabel>
-                  <FormControl>
-                    <div className="flex gap-1">
-                      <Input
-                        {...field}
-                        type={confirmPasswordVisible ? "text" : "password"}
-                      />
-                      <Button
-                        size="icon"
-                        className="cursor-pointer"
-                        type="button"
-                        onClick={toggleConfirmVisibility}
-                      >
-                        {confirmPasswordVisible ? <EyeOff /> : <Eye />}
-                      </Button>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit" disabled={loading} variant={"default"} className="w-full mt-4 cursor-pointer">{loading ? "Loading..." : "Sign up"}</Button>
-          </form>
-        </Form>
-      </div>
-    </>
+    <div className="font-[family-name:var(--font-geist-sans)]">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleRegister)} className="space-y-2">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl><Input {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl><Input {...field} type="email" /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <div className="flex gap-1">
+                    <Input {...field} type={passwordVisible ? "text" : "password"} />
+                    <Button size="icon" type="button" onClick={togglePasswordVisibility}>
+                      {passwordVisible ? <EyeOff /> : <Eye />}
+                    </Button>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Confirm password</FormLabel>
+                <FormControl>
+                  <div className="flex gap-1">
+                    <Input {...field} type={confirmPasswordVisible ? "text" : "password"} />
+                    <Button size="icon" type="button" onClick={toggleConfirmVisibility}>
+                      {confirmPasswordVisible ? <EyeOff /> : <Eye />}
+                    </Button>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit" disabled={loading} className="w-full mt-4">
+            {loading ? "Loading..." : "Sign up"}
+          </Button>
+        </form>
+      </Form>
+    </div>
   );
 }
 

@@ -16,11 +16,9 @@ import {
 } from "@/components/ui/tabs"
 import LoginForm from './loginForm'
 import RegisterForm from './registerForm'
-import useAuthCheck from "@/hooks/useAuthCheck";
 
 
 export default function AuthToggler() {
-    useAuthCheck({when:"authenticated", redirectTo: "/home"})
 
     return (
         <Tabs defaultValue="login" className="w-[400px] font-[family-name:var(--font-geist-sans)]">

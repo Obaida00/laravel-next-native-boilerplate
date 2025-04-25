@@ -3,10 +3,6 @@
 import { Button } from '@/components/ui/button';
 import useUser from '@/hooks/useUser';
 import router  from 'next/navigation';
-// import { useEffect, useState } from 'react';
-
-// import useAuthCheck from '@/hooks/useAuthCheck'
-
 
 export default function Homepage() {
     const { user, loading } = useUser();
@@ -17,7 +13,6 @@ export default function Homepage() {
         });
 
         if (res.ok) {
-            // رجّع المستخدم للصفحة الرئيسية أو صفحة تسجيل الدخول
             router.redirect("/");
         }
     };

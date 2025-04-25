@@ -27,7 +27,6 @@ export async function POST(request: Request) {
       return NextResponse.json(data, { status: laravelResponse.status });
     }
 
-    // استخراج التوكن من Laravel response
     const token = data.token;
 
     const response = NextResponse.json(
@@ -35,7 +34,7 @@ export async function POST(request: Request) {
       { status: 200 }
     );
 
-    // تخزين التوكن في httpOnly cookie
+
     response.cookies.set("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",

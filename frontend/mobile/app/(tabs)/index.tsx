@@ -10,16 +10,7 @@ export default function HomeScreen() {
   return (
     <View centerV centerH height={"100%"}>
       <ThemedText>hello</ThemedText>
-        <TextField
-          placeholder="Email"
-          keyboardType="email-address"
-          floatingPlaceholder
-          enableErrors
-          validate={["required", (value) => !value?.search("@")]}
-          validationMessage={["Please enter an email","Enter a valid email"]}
-          maxLength={30}
-          
-        ></TextField>
+        
     </View>
   );
 }

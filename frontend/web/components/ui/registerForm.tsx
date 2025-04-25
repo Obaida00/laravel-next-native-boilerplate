@@ -95,8 +95,7 @@ function RegisterForm() {
       }
 
       myToast({ title: "Account created successfully", state: "success" });
-      router.replace("/home"); // ✅ وجه المستخدم بعد التسجيل
-
+      router.replace("/home"); 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       myToast({ title: "Something went wrong", state: "error" });

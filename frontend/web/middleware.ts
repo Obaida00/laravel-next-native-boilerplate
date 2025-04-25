@@ -11,12 +11,11 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   } else {
     console.log(token);
-    // return NextResponse.redirect(new URL("/home", request.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/dashboard", "/profile", "/home"], // أي صفحات بدك تحميها
+  matcher: ["/dashboard", "/profile", "/home"],
 };

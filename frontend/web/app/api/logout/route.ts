@@ -6,10 +6,10 @@ export async function POST() {
     { status: 200 }
   );
 
-  // حذف التوكن من الكوكي
+
   response.cookies.set("token", "", {
     httpOnly: true,
-    expires: new Date(0), // انتهاء صلاحية الكوكي مباشرة
+    expires: new Date(0),
     path: "/",
   });
 

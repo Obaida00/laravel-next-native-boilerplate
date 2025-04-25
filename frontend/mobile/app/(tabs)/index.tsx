@@ -4,14 +4,10 @@ import { HelloWave } from "@/components/HelloWave";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { TextField, View } from "react-native-ui-lib";
 
 export default function HomeScreen() {
   return (
-    <View centerV centerH height={"100%"}>
-      <ThemedText>hello</ThemedText>
-        
-    </View>
+    
   );
 }
 

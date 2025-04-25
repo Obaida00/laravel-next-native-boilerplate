@@ -52,7 +52,7 @@ export default function LoginForm() {
                 return;
             }
 
-            router.push("/home"); // ✅ غيرنا المسار حسب صفحة الحماية
+            router.replace("/home");
             myToast({ title: "Logged in successfully", state: "success" });
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars

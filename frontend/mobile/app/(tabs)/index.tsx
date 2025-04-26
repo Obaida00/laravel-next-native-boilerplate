@@ -4,10 +4,13 @@ import { HelloWave } from "@/components/HelloWave";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import LoginForm from "@/components/LoginForm";
 
 export default function HomeScreen() {
   return (
-    
+    <ThemedView style={styles.mainContainer}>
+      <LoginForm></LoginForm>
+    </ThemedView>
   );
 }
 
@@ -32,4 +35,10 @@ const styles = StyleSheet.create({
     left: 0,
     position: "absolute",
   },
+  mainContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: "100%",
+  }
 });

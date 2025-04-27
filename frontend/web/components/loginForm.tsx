@@ -4,11 +4,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/form';
 import { EyeOff, Eye } from 'lucide-react';
-import { Button } from './button';
-import { Input } from './input';
-import myToast from './toast';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import myToast from './ui/toast';
 import { useRouter } from 'next/navigation';
 
 export default function LoginForm() {

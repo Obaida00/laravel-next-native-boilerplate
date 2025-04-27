@@ -1,5 +1,5 @@
 "use client"
-import AuthToggler from "@/components/ui/authToggler";
+import AuthToggler from "@/components/authToggler";
 
 
 export default function Home() {

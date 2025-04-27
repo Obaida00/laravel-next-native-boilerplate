@@ -9,12 +9,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "./form";
-import { Input } from "./input";
+} from "./ui/form";
+import { Input } from "./ui/input";
 import { useState } from "react";
-import { Button } from "./button";
+import { Button } from "./ui/button";
 import { Eye, EyeOff } from "lucide-react";
-import myToast from "./toast";
+import myToast from "./ui/toast";
 import { useRouter } from "next/navigation";
 
 function RegisterForm() {

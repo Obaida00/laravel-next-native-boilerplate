@@ -36,6 +36,15 @@ class AuthController extends Controller
             'passwordConfirmation' => 'required',
             /** @ignoreParam */
             'password_confirmation' => ''
+        ], [
+            'name.required' => __('validation.custom.name.required'),
+            'name.max' => __('validation.custom.name.max'),
+            'email.required' => __('validation.custom.email.required'),
+            'email.email' => __('validation.custom.email.email'),
+            'email.unique' => __('validation.custom.email.unique'),
+            'password.required' => __('validation.custom.password.required'),
+            'password.confirmed' => __('validation.custom.password.confirmed'),
+            'passwordConfirmation.required' => __('validation.custom.passwordConfirmation.required'),
         ]);
 
         $user = User::create($data);
@@ -57,13 +66,17 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required|email',
             'password' => 'required'
+        ], [
+            'email.required' => __('validation.custom.email.required'),
+            'email.email' => __('validation.custom.email.email'),
+            'password.required' => __('validation.custom.password.required'),
         ]);
 
         $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
-                'message' => 'Incorrect email or password'
+                'message' => __('IncorrectEmailOrPassword')
             ], 422);
         }
 
@@ -87,7 +100,7 @@ class AuthController extends Controller
             try {
                 $socialUser = Socialite::driver('google')->userFromToken($token);
             } catch (\Exception $e) {
-                return response()->json(['error' => 'Invalid Google token'], 401);
+                return response()->json(['error' => __('InvalidGoogleToken')], 401);
             }
         } elseif ($provider === 'github') {
             try {
@@ -96,7 +109,7 @@ class AuthController extends Controller
                     'Accept' => 'application/json',
                 ])->get('https://api.github.com/user');
                 if ($response->failed()) {
-                    return response()->json(['error' => 'Invalid GitHub token'], 401);
+                    return response()->json(['error' => __('InvalidGitHubToken')], 401);
                 }
 
                 $userData = $response->json();
@@ -114,14 +127,14 @@ class AuthController extends Controller
                     'email' => $userData['email'],
                 ];
             } catch (\Exception $e) {
-                return response()->json(['error' => 'Error verifying GitHub token'], 500);
+                return response()->json(['error' => __('ErrorVerifyingGitHubToken')], 500);
             }
         } else {
-            return response()->json(['error' => 'Unsupported provider'], 400);
+            return response()->json(['error' => __('UnsupportedProvider')], 400);
         }
 
         if ($socialUser->email == null) {
-            return response()->json(['message' => 'A valid email address is required'], 422);
+            return response()->json(['message' => __('ValidEmailAddressIsRequired')], 422);
         }
 
         $user = User::where('provider', $provider)
@@ -160,7 +173,7 @@ class AuthController extends Controller
         $request->user()->tokens()->delete();
 
         return response()->json([
-            'message' => 'Successfully logged out!'
+            'message' => __('SuccessfullyLoggedOut')
         ]);
     }
 }

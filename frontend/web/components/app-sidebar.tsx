@@ -3,7 +3,6 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader, Si
 import Link from 'next/link'
 import { BarChartBigIcon, PillBottle, LayoutGrid, Settings2, Menu } from 'lucide-react'
 import { Button } from './ui/button';
-import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
 export default function AppSidebar() {
     const [selectedTab, setSelectedTab] = useState("Dashboard");

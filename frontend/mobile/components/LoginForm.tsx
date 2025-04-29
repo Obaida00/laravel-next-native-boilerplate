@@ -1,48 +1,81 @@
-import React from "react"
-import { StyleSheet, View } from "react-native"
+import React, { createContext, useState } from "react"
+import { StyleSheet, TextInput, TouchableOpacity, View, Text } from "react-native"
 import { ThemedView } from "./ThemedView"
 import { FormControl, FormControlError, FormControlErrorIcon, FormControlErrorText, FormControlHelper, FormControlHelperText, FormControlLabel, FormControlLabelText } from "./ui/form-control"
 import { Input, InputField } from "./ui/input";
 import { AlertCircleIcon } from "./ui/icon";
+import { Controller, Form, SubmitHandler, useForm } from "react-hook-form";
+import * as Yup from "yup";
+import { Formik } from "formik";
+import { AuthContext, useAuth } from "@/contexts/auth-context";
+import { Button } from "./ui/button";
+import Feather from "@expo/vector-icons/Feather";
 
 export default function LoginForm() {
-    const [isInvalid, setIsInvalid] = React.useState(false)
-    const [inputValue, setInputValue] = React.useState("12345")
+    const [passwordVisible, setPasswordVisible] = useState(false);
+    const { login, loading } = useAuth()!;
 
-    const handleLogin = () => { }
+    const formSchema = Yup.object().shape({
+        email: Yup.string().email('Please enter a valid email').required('Email is required'),
+        password: Yup.string().min(8, 'Password must be at least 8 characters').required('Password is required')
+    });
+
+    const togglePasswordVisibility = () => {
+        setPasswordVisible((prev) => !prev)
+    }
+    const handleLogin = (data: Yup.InferType<typeof formSchema>) => {
+
+        login(data.email, data.password);
+
+
+    }
 
     return (
+        <View>
+            <Formik initialValues={{ email: '', password: '' }} validationSchema={formSchema} onSubmit={handleLogin}>
+                {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+                    <View style={{ padding: 20 }}>
 
-        <FormControl isInvalid={isInvalid} style={{ width: 350, borderWidth: 1, borderRadius: 10, height: 400, padding: 20 }}>
-            <FormControlLabel>
-                <FormControlLabelText>Email</FormControlLabelText>
-            </FormControlLabel>
-            <Input size="xl">
-                <InputField
-                    type="password"
-                    placeholder="password"
-                    value={inputValue}
-                    onChangeText={(text) => setInputValue(text)}
-                />
-            </Input>
-            <FormControlHelper>
-                <FormControlHelperText>
-                    Must be atleast 6 characters.
-                </FormControlHelperText>
-            </FormControlHelper>
-            <FormControlError>
-                <FormControlErrorIcon as={AlertCircleIcon} />
-                <FormControlErrorText>
-                    Atleast 6 characters are required.
-                </FormControlErrorText>
-            </FormControlError>
-        </FormControl>
+                        <View style={{ marginBottom: 15 }}>
+                            <TextInput placeholder="Email" onChangeText={handleChange("email")} onBlur={handleBlur("email")} value={values.email} style={styles.inputField}></TextInput>
+                            {errors.email && touched.email && <Text style={{ color: "red", marginTop:5 }}>{errors.email}</Text>}
+                        </View>
+
+                        <View style={{ marginBottom: 5, alignItems: "center", flexDirection:"row"}}>
+                            <TextInput  secureTextEntry={passwordVisible} placeholder="Password" onChangeText={handleChange("password")} onBlur={handleBlur("password")} value={values.password} style={styles.inputField}></TextInput>
+                            <TouchableOpacity onPress={togglePasswordVisibility} style={{ position: "absolute", right: 10, }}>
+                                <Feather name={passwordVisible ? "eye" : "eye-off"} size={24} color={"black"} />
+                            </TouchableOpacity>
+                        </View>
+                        {errors.password && touched.password && <Text style={{ color: "red" }}>{errors.password}</Text>}
+
+                        <TouchableOpacity onPress={() => handleSubmit()} style={styles.signInBtn}>
+                            <Text style={{ color: "white" }}>Sign in</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
+            </Formik>
+            {loading && (<Text>Loading...</Text>)}
+        </View>
 
     )
 }
 
 const styles = StyleSheet.create({
     inputField: {
-        height: 50
-    }
+        height: 60,
+        width: "100%",
+        borderRadius: 8,
+        backgroundColor: "#e5e7eb",
+        padding: 13,
+    },
+    signInBtn: {
+        backgroundColor: "#18a3e2",
+        height: 55,
+        borderRadius: 10,
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: 15,
+        position: "relative",
+    },
 })

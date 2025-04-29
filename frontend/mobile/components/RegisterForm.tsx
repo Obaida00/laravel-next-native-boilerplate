@@ -1,6 +1,6 @@
 import { useAuth } from '@/contexts/auth-context';
 import Feather from '@expo/vector-icons/Feather';
-import { Formik } from 'formik';
+import { Formik, FormikHelpers, FormikValues } from 'formik';
 import React, { useState } from 'react'
 import { TextInput, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import * as Yup from "yup";
@@ -17,8 +17,16 @@ export default function RegisterForm() {
         setConfirmationVisible((previous) => !previous);
     }
 
-    const handleRegister = (values: Yup.InferType<typeof formSchema>) => {
-        register(values.fullName, values.email, values.password, values.passwordConfirmation)
+    const handleRegister = async (values: Yup.InferType<typeof formSchema>, { setErrors, setStatus }: FormikHelpers<Yup.InferType<typeof formSchema>>) => {
+        try {
+            await register(values.fullName, values.email, values.password, values.passwordConfirmation);
+        } catch (error: any) {
+            if (error.fieldErrors) {
+                setErrors(error.fieldErrors)
+            } else if(error.message) {
+                setStatus(error.message);
+            }
+        }
     }
 
     const formSchema = Yup.object().shape({
@@ -30,9 +38,9 @@ export default function RegisterForm() {
     return (
         <View>
             <Formik initialValues={{ fullName: '', email: '', password: '', passwordConfirmation: '' }} validationSchema={formSchema} onSubmit={handleRegister}>
-                {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+                {({ handleChange, handleBlur, handleSubmit, values, errors, touched, status }) => (
                     <View style={{ padding: 20 }}>
-
+                        {status && <Text style={{ color: "red" , padding: 20, backgroundColor: "rgba(255, 0, 0, 0.1)", borderRadius: 10, marginBottom: 15}}>{status}</Text>}
                         <View style={{ marginBottom: 15 }}>
                             <TextInput placeholder="Full name" onChangeText={handleChange("fullName")} onBlur={handleBlur("fullName")} value={values.fullName} style={styles.inputField}></TextInput>
                             {errors.fullName && touched.fullName && <Text style={{ color: "red", marginTop: 5 }}>{errors.fullName}</Text>}

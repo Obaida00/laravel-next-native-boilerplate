@@ -1,7 +1,8 @@
-import { createContext, useEffect, useState } from "react";
+import Constants from "expo-constants";
+import { createContext, useContext, useEffect, useState } from "react";
 import * as Keychain from "react-native-keychain";
-
-
+import * as SecureStore from "expo-secure-store";
+import { router } from "expo-router";
 interface AuthContextType {
   user: any;
   loading: boolean;
@@ -20,7 +21,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     password: string) => {
     try {
       setLoading(true);
-      const response = await fetch(process.env.BASE_URL!, {
+      console.log("BASE_URL:", Constants.expoConfig?.extra?.BASE_URL!);
+      const response = await fetch(`${Constants.expoConfig?.extra?.BASE_URL!}/api/login`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -31,8 +33,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (response.ok) {
         const data = await response.json();
-        await Keychain.setGenericPassword("token", JSON.stringify(data.token));
+        await SecureStore.setItemAsync("token", JSON.stringify(data.token));
+        console.log("logged in");
         setUser(data.user);
+        router.replace('/home');
+      } else {
+        console.log(response.status);
+
       }
     } catch (error) {
       console.error("Login error: ", error);
@@ -44,18 +51,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = async () => {
     try {
-      const token = await Keychain.getGenericPassword()
+      const token = await SecureStore.getItemAsync("token")
       console.log(token);
       if (token) {
-        const respose = await fetch(process.env.BASE_URL!, {
+        const respose = await fetch(`${Constants.expoConfig?.extra?.BASE_URL!}/api/logout`, {
           headers: {
             "Authorization": `Bearer ${token}`,
             "Accept": "application/json",
             "Content-Type": "application/json"
           },
         });
-        await Keychain.resetGenericPassword();
+        await SecureStore.deleteItemAsync("token");
         setUser(null);
+        router.replace("/")
       } else {
         throw new Error("Un Authorized")
       }
@@ -94,13 +102,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     userName: string,
     email: string,
     password: string,
-    passwordConfirmation: string,
+    passwordConfirmation: string
   ) => {
     try {
       setLoading(true);
-      const response = await fetch(process.env.BASE_URL!, {
+      const response = await fetch(`${Constants.expoConfig?.extra?.BASE_URL!}/api/register`, {
+        method: "POST",
         headers: {
-          Accept: "application/json",
+          "Accept": "application/json",
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -110,24 +119,39 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           passwordConfirmation: passwordConfirmation,
         }),
       });
+      const data = await response.json();
       if (response.ok) {
-        const data = await response.json();
+        console.log("registered");
         const token = data.token;
-        await Keychain.setGenericPassword("token", JSON.stringify(token));
-        setUser(data);
+        await SecureStore.setItemAsync("token", JSON.stringify(token));
+        console.log(SecureStore.getItemAsync("token"));
+        setUser(data.user);
+        router.replace("/home");
+      } else {
+        console.log(data.message);
+
+        if (data.message) {
+          throw { message: data.message };
+        }
+        if (data.errors) {
+          const simplifiedErrors: Record<string, string> = {};
+          for (const key in data.errors) {
+            simplifiedErrors[key] = data.errors[key][0];
+          }
+          throw { fieldErrors: simplifiedErrors };
+        }
       }
-    } catch (error) {
-      console.error("Registration error:", error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    loadUserInfo();
+    // loadUserInfo();
   }, []);
 
   return (
     <AuthContext.Provider value={{ user, loading, login, logout, register }}>{children}</AuthContext.Provider>
   )
 };
+export const useAuth = () => useContext(AuthContext);

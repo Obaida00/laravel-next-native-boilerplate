@@ -66,13 +66,12 @@ export default function RegisterForm() {
                         </View>
                         {errors.passwordConfirmation && touched.passwordConfirmation && <Text style={{ color: "red" }}>{errors.passwordConfirmation}</Text>}
 
-                        <TouchableOpacity onPress={() => handleSubmit()} style={styles.signUpBtn}>
-                            <Text style={{ color: "white" }}>Sign in</Text>
+                        <TouchableOpacity disabled={loading} onPress={() => handleSubmit()} style={styles.signUpBtn}>
+                            <Text style={{ color: "white" }}>{loading? "Loading..." : "Sign up"}</Text>
                         </TouchableOpacity>
                     </View>
                 )}
             </Formik>
-            {loading && (<Text>Loading...</Text>)}
         </View>
     )
 }

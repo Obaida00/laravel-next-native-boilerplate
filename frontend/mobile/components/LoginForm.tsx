@@ -49,13 +49,12 @@ export default function LoginForm() {
                         </View>
                         {errors.password && touched.password && <Text style={{ color: "red" }}>{errors.password}</Text>}
 
-                        <TouchableOpacity onPress={() => handleSubmit()} style={styles.signInBtn}>
-                            <Text style={{ color: "white" }}>Sign in</Text>
+                        <TouchableOpacity disabled={loading} onPress={() => handleSubmit()} style={styles.signInBtn}>
+                            <Text style={{ color: "white" }}>{loading? "Loading..." : "Sign in"}</Text>
                         </TouchableOpacity>
                     </View>
                 )}
             </Formik>
-            {loading && (<Text>Loading...</Text>)}
         </View>
 
     )

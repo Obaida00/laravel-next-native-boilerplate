@@ -10,6 +10,7 @@ import { Formik } from "formik";
 import { AuthContext, useAuth } from "@/contexts/auth-context";
 import { Button } from "./ui/button";
 import Feather from "@expo/vector-icons/Feather";
+import { Link } from "expo-router";
 
 export default function LoginForm() {
     const [passwordVisible, setPasswordVisible] = useState(false);

@@ -1,23 +1,16 @@
+import LoginForm from "@/components/LoginForm";
+import RegisterForm from "@/components/RegisterForm";
 import { Button, ButtonText } from "@/components/ui/button";
-import { router } from "expo-router";
+import { FormControl, FormControlError, FormControlErrorIcon, FormControlErrorText, FormControlHelper, FormControlHelperText, FormControlLabel, FormControlLabelText } from "@/components/ui/form-control";
+import { AlertCircleIcon } from "@/components/ui/icon";
+import { Input, InputField } from "@/components/ui/input";
+import { AuthProvider } from "@/contexts/auth-context";
+import { Redirect, router, Stack } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function Index() {
   return (
-    <>
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text style={styles.headerText}>Welcome to our pharmacy</Text>
-        <TouchableOpacity style={styles.gettingStartedBtn} onPress={() => router.push("./home")}>
-          <Text style={{ color: "green" }}>get started</Text>
-        </TouchableOpacity>
-      </View>
-    </>
+    <Redirect href={"/(auth)/login"}/>
   );
 }
 
@@ -25,13 +18,6 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 22,
   },
-  gettingStartedBtn: {
-    backgroundColor: "white",
-    width: "80%",
-    height: 50,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center"
-  },
+  
 
 })

@@ -62,6 +62,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           },
         });
         await SecureStore.deleteItemAsync("token");
+        console.log(SecureStore.getItemAsync("token"));
+        
         setUser(null);
         router.replace("/")
       } else {
@@ -147,7 +149,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    // loadUserInfo();
   }, []);
 
   return (

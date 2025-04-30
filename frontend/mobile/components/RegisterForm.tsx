@@ -36,7 +36,7 @@ export default function RegisterForm() {
         passwordConfirmation: Yup.string().oneOf([Yup.ref('password'), ""], "Passwords doesn't match").required("Please confirm your password"),
     });
     return (
-        <View>
+        <View style={{width: "100%"}}>
             <Formik initialValues={{ fullName: '', email: '', password: '', passwordConfirmation: '' }} validationSchema={formSchema} onSubmit={handleRegister}>
                 {({ handleChange, handleBlur, handleSubmit, values, errors, touched, status }) => (
                     <View style={{ padding: 20 }}>

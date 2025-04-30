@@ -1,4 +1,3 @@
-import { Input } from '@/components/ui/input'
 import { useAuth } from '@/contexts/auth-context'
 import React from 'react'
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
@@ -24,7 +23,6 @@ const styles = StyleSheet.create({
         minHeight: "100%",
         justifyContent: "center",
         alignItems: "center",
-        // display: "flex"
     },
     logoutBtn: {
         width: 150,

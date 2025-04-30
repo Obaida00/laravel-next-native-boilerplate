@@ -1,5 +1,4 @@
 import LoginForm from '@/components/LoginForm'
-import { router } from 'expo-router'
 import { Link } from 'expo-router'
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'

@@ -11,6 +11,7 @@ export async function POST(request: Request) {
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
+          "Accept-Language": "en"
         },
         body: JSON.stringify({
           name: body.name,

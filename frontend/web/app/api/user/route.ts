@@ -17,12 +17,13 @@ export async function GET() {
         headers: {
           "Accept": "application/json",
           "Authorization": `Bearer ${token}`,
+          "Accept-Language" : "en",
         },
       }
     );
 
     const data = await laravelRes.json();
-
+    console.log(data.user.email)
     if (!laravelRes.ok) {
       return NextResponse.json(data, { status: laravelRes.status });
     }

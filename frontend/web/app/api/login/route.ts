@@ -5,7 +5,7 @@ export async function POST(req: Request) {
 
   const laravelRes = await fetch(`${process.env.LARAVEL_API_BASE_URL}/api/login`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" , "Accept": "application/json"},
+    headers: { "Content-Type": "application/json" , "Accept": "application/json", "Accept-Language" : "en",},
     body: JSON.stringify(body),
   });
 

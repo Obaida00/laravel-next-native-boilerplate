@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -13,15 +14,15 @@ use Str;
 class AuthController extends Controller
 {
     /**
-     * @response User
+     * @response UserResource
      */
     public function currentUser(Request $request)
     {
-        return response()->json($request->user());
+        return new UserResource($request->user());
     }
 
     /**
-     * @return array{token: string, user: User}
+     * @response array{token: string, user: UserResource}
      * @unauthenticated
      */
     public function register(Request $request)
@@ -53,12 +54,12 @@ class AuthController extends Controller
 
         return response()->json([
             'token' => $token->plainTextToken,
-            'user' => $user
+            'user' => new UserResource($user)
         ]);
     }
 
     /**
-     * @response array{token: string, user: User}
+     * @response array{token: string, user: UserResource}
      * @unauthenticated
      */
     public function login(Request $request)
@@ -84,11 +85,12 @@ class AuthController extends Controller
 
         return response()->json([
             'token' => $token->plainTextToken,
-            'user' => $user
+            'user' => new UserResource($user)
         ]);
     }
 
     /**
+     * @response array{token: string, user: UserResource}
      * @unauthenticated
      */
     public function handleSocialLogin(Request $request)
@@ -163,8 +165,7 @@ class AuthController extends Controller
 
         return response()->json([
             'token' => $token,
-            /** @var User $user */
-            'user' => $user
+            'user' => new UserResource($user)
         ]);
     }
 
